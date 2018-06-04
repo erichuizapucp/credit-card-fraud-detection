@@ -10,8 +10,6 @@ def ObtenerHiperParametros(x_train, y_train, x_test, y_test):
     return m.GridSearch(LinearSVC(), parametros, medida, x_train, y_train, x_test, y_test)
 
 def Entrenar(x_train, y_train, parametros):
-    parametros['C']
-
     modelo = LinearSVC(C=parametros['C'], penalty=parametros['penalty'], dual=parametros['dual'], class_weight=parametros['class_weight'])
     modelo.fit(x_train, y_train)
     return modelo

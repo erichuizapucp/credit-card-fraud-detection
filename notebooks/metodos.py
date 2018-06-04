@@ -54,16 +54,16 @@ def MostrarMatrizDeConfusion(modelo, x_test, y_test):
     print ( 'Precición        : ', (TP)/(TP+FP) )
     print ( 'Exhaustividad    : ', (TP)/(TP+FN) )
 
-def ObtenerMedidaDeCalidad(modelo, x_test, y_test):
-    y_score = modelo.decision_function(x_test)
-    return average_precision_score(y_test, y_score)
+def ObtenerMedidaDeCalidad(modelo, x, y):
+    y_score = modelo.decision_function(x)
+    return average_precision_score(y, y)
 
-def MostrarMedidaDeCalidad(modelo, x_test, y_test):
-    y_score = modelo.decision_function(x_test)
-    average_precision = average_precision_score(y_test, y_score)
+def MostrarMedidaDeCalidad(modelo, x, y):
+    y_score = modelo.decision_function(x)
+    average_precision = average_precision_score(y, y_score)
     print('Medida del promedio de la Precisión y Exhaustividad: {0:0.2f}'.format(average_precision))
 
-    precision, recall, _ = precision_recall_curve(y_test, y_score)
+    precision, recall, _ = precision_recall_curve(y, y_score)
 
     plt.step(recall, precision, color='b', alpha=0.2, where='post')
     plt.fill_between(recall, precision, step='post', alpha=0.2, color='b')
