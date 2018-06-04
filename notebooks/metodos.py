@@ -6,6 +6,7 @@ from imblearn.over_sampling import ADASYN
 from sklearn.feature_selection import RFECV
 from sklearn.metrics import average_precision_score
 from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import auc
 import matplotlib.pyplot as plt
 from itertools import product
 import numpy as np
@@ -54,9 +55,15 @@ def MostrarMatrizDeConfusion(modelo, x_test, y_test):
     print ( 'Precición        : ', (TP)/(TP+FP) )
     print ( 'Exhaustividad    : ', (TP)/(TP+FN) )
 
-def ObtenerMedidaDeCalidad(modelo, x_test, y_test):
-    y_score = modelo.decision_function(x_test)
-    return average_precision_score(y_test, y_score)
+def ObtenerMedidaDeCalidad(modelo, x, y):
+    y_score = modelo.decision_function(x)
+    return average_precision_score(y, y)
+
+def ObtenerMedidaDeCalidad2(modelo, x, y):
+    probs = modelo.predict_proba(x)
+    precision, recall, thresholds = precision_recall_curve(y, probs[:, 1])
+    return auc(recall, precision)
+    
 
 def MostrarMedidaDeCalidad(modelo, x_test, y_test):
     y_score = modelo.decision_function(x_test)
