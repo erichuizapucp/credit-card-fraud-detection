@@ -7,6 +7,8 @@ from sklearn.feature_selection import RFECV
 from sklearn.metrics import average_precision_score
 from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
+from itertools import product
+import numpy as np
 
 def MostrarProporciones(num_tv, num_tf):
     print('Cantidad de transacciónes válidas: {0}'.format(num_tv))
@@ -52,6 +54,10 @@ def MostrarMatrizDeConfusion(modelo, x_test, y_test):
     print ( 'Precición        : ', (TP)/(TP+FP) )
     print ( 'Exhaustividad    : ', (TP)/(TP+FN) )
 
+def ObtenerMedidaDeCalidad(modelo, x_test, y_test):
+    y_score = modelo.decision_function(x_test)
+    return average_precision_score(y_test, y_score)
+
 def MostrarMedidaDeCalidad(modelo, x_test, y_test):
     y_score = modelo.decision_function(x_test)
     average_precision = average_precision_score(y_test, y_score)
@@ -67,3 +73,21 @@ def MostrarMedidaDeCalidad(modelo, x_test, y_test):
     plt.ylim([0.0, 1.05])
     plt.xlim([0.0, 1.0])
     plt.title('Curva de Precisión y Exhaustividad: AP={0:0.2f}'.format(average_precision))
+
+def MostrarRegionesDeDecision(modelos, nombres, X, y):
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
+                        np.arange(y_min, y_max, 0.1))
+
+    f, axarr = plt.subplots(2, 2, sharex='col', sharey='row', figsize=(10, 8))
+
+    for idx, clf, tt in zip(product([0, 1], [0, 1]), modelos, nombres):
+        Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+        Z = Z.reshape(xx.shape)
+
+        axarr[idx[0], idx[1]].contourf(xx, yy, Z, alpha=0.4)
+        axarr[idx[0], idx[1]].scatter(X[:, 0], X[:, 1], c=y, alpha=0.8)
+        axarr[idx[0], idx[1]].set_title(tt)
+
+    plt.show()
