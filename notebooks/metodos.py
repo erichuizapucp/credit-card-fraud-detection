@@ -9,6 +9,7 @@ from sklearn.metrics import precision_recall_curve
 import matplotlib.pyplot as plt
 from itertools import product
 import numpy as np
+from sklearn.metrics import auc
 
 def MostrarProporciones(num_tv, num_tf):
     print('Cantidad de transacciónes válidas: {0}'.format(num_tv))
@@ -56,7 +57,12 @@ def MostrarMatrizDeConfusion(modelo, x_test, y_test):
 
 def ObtenerMedidaDeCalidad(modelo, x, y):
     y_score = modelo.decision_function(x)
-    return average_precision_score(y, y)
+    return average_precision_score(y, y_score)
+
+def ObtenerMedidaDeCalidad2(modelo, x, y):
+    probs = modelo.predict_proba(x)
+    precision, recall, thresholds = precision_recall_curve(y, probs[:, 1])
+    return auc(recall, precision)
 
 def MostrarMedidaDeCalidad(modelo, x, y):
     y_score = modelo.decision_function(x)
